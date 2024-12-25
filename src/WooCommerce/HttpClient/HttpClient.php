@@ -154,6 +154,7 @@ class HttpClient
     {
         // Setup authentication.
         if ($this->isSsl()) {
+
             $basicAuth  = new BasicAuth(
                 $this->ch,
                 $this->consumerKey,
@@ -163,6 +164,7 @@ class HttpClient
             );
             $parameters = $basicAuth->getParameters();
         } else {
+
             $oAuth      = new OAuth(
                 $url,
                 $this->consumerKey,
