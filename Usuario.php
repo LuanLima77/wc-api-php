@@ -34,10 +34,12 @@ class Usuario
     public $dataNascimento;
     
     public $cupomUsado;
+    
+    public $telefone;
 
 
 
-    function __construct($wpId, $nomeCompleto,$email,$plano,$cep,$estado,$aceita18,$categoriaPrimaria,$categoriaSecundaria = null,$idSkoob=null,$dataNascimento=null, $cupomUsado = null) 
+    function __construct($wpId, $nomeCompleto,$email,$plano,$cep,$estado,$aceita18,$categoriaPrimaria,$categoriaSecundaria = null,$idSkoob=null,$dataNascimento=null, $cupomUsado = null, $telefone = null) 
 
     {
 
@@ -68,6 +70,8 @@ class Usuario
         $this->quinzena = getQuinzenaAtual();
         
         $this->cupomUsado = $cupomUsado;
+        
+        $this->telefone = $telefone;
 
        
 

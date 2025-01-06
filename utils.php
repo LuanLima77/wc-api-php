@@ -35,7 +35,7 @@ function contains ($string, $keyword)
     if(startsWith($plano,"Kit básico"))
     {
 
-        if(contains($plano, '2 livros'))
+    if (contains($plano, '2 livros') || contains($plano, 'dois livros')) 
 
         {
 
@@ -53,7 +53,7 @@ function contains ($string, $keyword)
 
     if(startsWith($plano,"Kit Básico"))
     {
-        if(contains($plano, '2 livros'))
+    if (contains($plano, '2 livros') || contains($plano, 'dois livros')) 
 
         {
 
@@ -78,8 +78,7 @@ function contains ($string, $keyword)
 
     if(startsWith($plano,"Kit Extra"))
     {
-          if(contains($plano, '2 livros'))
-
+    if (contains($plano, '2 livros') || contains($plano, 'dois livros')) 
         {
         return 10;
 
@@ -118,6 +117,7 @@ function contains ($string, $keyword)
 
  function getCategoria($categoria)
 {
+    $categoria = strtolower($categoria);
 
     switch($categoria)
 

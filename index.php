@@ -28,8 +28,6 @@ use Automattic\WooCommerce\Client;
 
 
 
-
-
 $url = "https://www.literatour.com.br";
 
 $consumer_key = "ck_9e9f6e07f48147b3c6c4cf4b66225e4414a11724";
@@ -45,7 +43,7 @@ $mailClient = new LiteratourMail();
 
 
 
-$ontem = gmdate("Y-m-d",strtotime("-2 days")). "T00:00:00";  //-2
+$ontem = gmdate("Y-m-d",strtotime("-10 days")). "T00:00:00";  //-2
 
 $hoje = gmdate("Y-m-d"). "T00:00:00";
 
@@ -107,7 +105,6 @@ while($continua == 100){
 
 
     $recentOrders = $woocommerce->get($endpoint, $paramLastOrders);
-    //$recentCancelledOrders = $woocommerce->get($endpoint, $paramLastCancelledOrders);
 
     $L2KCService = new L2KC();
 
@@ -119,15 +116,13 @@ while($continua == 100){
 foreach ($recentOrders as $order) {
     $descricao_cupom = $order->coupon_lines[0]->meta_data[0]->value->description ?? "";
     
-
-
-
     $wpCustomerId = $order->customer_id;
     $categoriaPrimaria = 0;
     $categoriaSecundaria = 0 ;
     $aceita18 = 0;
     $idSkoob = 0;
     $dataNascimento = 0;
+
 
     
      foreach($order->meta_data as $meta_data)
@@ -189,10 +184,12 @@ foreach ($recentOrders as $order) {
             $wpIdSubscription =  $meta_data->value; 
 
          }
+         
+         
 
 
      }
-
+     
      
     echo '<hr>';
 
@@ -200,34 +197,33 @@ foreach ($recentOrders as $order) {
     $email = $order->billing->email;
 
     $plano =  $order->line_items[0]->name ? $order->line_items[0]->name : 0 ;
+    
+    if (stripos($plano, 'ANUAL') !== false) {
+    $descricao_cupom = "[ASSINANTE ANUAL] " . $descricao_cupom;
+}
 
     $cep = $order->billing->postcode;
 
     $estado = $order->billing->state ; 
 
     $fullName = $order->billing->first_name . " " . $order->billing->last_name;
+    
+    $telefone  =  $order->billing->phone; 
 
 
 
-    $user = new Usuario($wpCustomerId,$fullName, $email,$plano,$cep, $estado,$aceita18,$categoriaPrimaria, $categoriaSecundaria , $idSkoob, $dataNascimento, $descricao_cupom );
+    $user = new Usuario($wpCustomerId,$fullName, $email,$plano,$cep, $estado,$aceita18,$categoriaPrimaria, $categoriaSecundaria , $idSkoob, $dataNascimento, $descricao_cupom, $telefone );
 
     $subscription = new Subscription($wpIdSubscription,$wpCustomerId,$categoriaPrimaria,$categoriaSecundaria,$plano);
 
 
 
-//Exclui o kit avulso(sem recorrencia) e o apoiador da coleta
+//Exclui o kit avulso bimestral e semestra (sem recorrencia) e o apoiador da coleta
 
-    if($order->created_via == "checkout" && ($order->line_items[0]->name !=  "Kit Semestral"  && $order->line_items[0]->name !=  "Kit Bimestral"
-
-                                            && $order->line_items[0]->name !=  "Kit Mensal" && strpos($order->line_items[0]->name, "Apoiador") === FALSE
-
-                                               )
-
-      )
+    if($order->created_via == "checkout" && ($order->line_items[0]->name !=  "Kit Semestral"  && $order->line_items[0]->name !=  "Kit Bimestral"  && strpos($order->line_items[0]->name, "Apoiador") === FALSE))
 
     {
 
-        
 
       echo "USUARIO " . $fullName . " ASSINOU " .  $order->date_created . " PLANO -> " . $plano . "<br> <br>\n";
 
@@ -237,7 +233,6 @@ foreach ($recentOrders as $order) {
 
 
 
-      
 
     }elseif($order->created_via == "subscription" && ($order->line_items[0]->name !=  "Kit Semestral"  && $order->line_items[0]->name !=  "Kit Bimestral"  && $order->line_items[0]->name !=  "Kit Mensal") && strpos($order->line_items[0]->name, "Apoiador") === FALSE )
 
@@ -286,4 +281,3 @@ $L2KCService->verificaPedidosAnuais();
 
 
 echo '<hr>Registros acabaram!';
-

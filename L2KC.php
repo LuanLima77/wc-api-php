@@ -90,26 +90,25 @@ class L2KC
 
         {
 
-          $db = "plane321_api_literatour";
+          $db = "";
 
-          $servername = "localhost:3306/$db";
+          $servername = "localhost";
 
-          $username = "root";
+          $username = "";
 
           $password = "";
-
 
         }else
 
         {
 
-          $db = "u555412982_api_literatour";
+          $db = "";
 
           $servername = "localhost";
 
-          $username = "u555412982_api_literatour";
+          $username = "";
 
-          $password = "Seila123";
+          $password = "";
           
 
         }
@@ -215,7 +214,8 @@ class L2KC
     public function sendToL2KC($user)
 
     {
-
+        
+       
       if ($this->alreadyCollectedAtDate()) return;
 
         echo "Iniciando envios de usuários do WooCommerce para a base da API Literatour(L2KC)...<br>\n";
@@ -243,6 +243,8 @@ class L2KC
         $quinzena = $user->quinzena;
         
         $obs = $user->cupomUsado;
+        
+        $telefone = $user->telefone;
 
 
         $verifySQL = "SELECT * FROM usuarios WHERE email = '$email' ";
@@ -257,9 +259,9 @@ class L2KC
         {
 
 
-            $SQL = "INSERT INTO usuarios (userId, nome, email, idSkoob, dataNascimento, tipoAssinatura, categoriaPrimaria, categoriaSecundaria, aceita18, cidadeId, quinzenaEnvio, obs,	dataUltimaAtualizacao, ativo, statusRenovacao)
+            $SQL = "INSERT INTO usuarios (userId, nome, email, idSkoob, dataNascimento, tipoAssinatura, categoriaPrimaria, categoriaSecundaria, aceita18, cidadeId, quinzenaEnvio, obs,	dataUltimaAtualizacao, ativo, statusRenovacao, telefone)
 
-            VALUES ($userId,'$nome','$email', $idSkoob, '$dataNascimento', $tipoAssinatura, '$categoriaPrimaria', '$categoriaSecundaria', $aceita18, $cidadeId,$quinzena,'$obs',  CURDATE(), 'S', 0)";
+            VALUES ($userId,'$nome','$email', $idSkoob, '$dataNascimento', $tipoAssinatura, '$categoriaPrimaria', '$categoriaSecundaria', $aceita18, $cidadeId,$quinzena,'$obs',  CURDATE(), 'S', 0, '$telefone')";
 
 
 
@@ -290,7 +292,6 @@ class L2KC
 
           }
             
-
 
     }
     
@@ -399,7 +400,6 @@ function verificaPedidosAnuais() {
 }
     
     
-    
 
 /**
  * TODO: Alterar chamadas de wp_id_novo para wp_id quando possivel, ou seja, a maioria dos assinantes tiver o valor do wp_id neste campo
@@ -489,7 +489,7 @@ public function updateSubOnL2KC($subscription,$email,$updateCategories = false)
 public function updateOnL2KC($user, $updateCategories = false)
 
 {
-
+    
   $email = $user->email;
 
   $categoriaPrimaria = $user->categoriaPrimaria;
@@ -543,42 +543,6 @@ if($updateCategories)
 
 
 }
-
-
-
-    public function cancelOnL2KC($user)
-
-    {
-
-        echo "sincronizando cancelamentos de usuários do WooCommerce com a base da API Literatour(L2KC)...<br>\n";
-
-        $email =  $user->email;
-
-
-
-
-
-        $SQL = "UPDATE usuarios SET ativo = 'N', dataUltimaAtualizacao = CURDATE() WHERE email = '$email' ";
-
-
-
-        if ($this->conn->query($SQL) === TRUE)
-
-        {
-
-          echo "Usuário " . $user->nomeCompleto . " sincronizado com sucesso na base de dados <br>\n";
-
-        } else
-
-        {
-
-          echo "Erro ao cancelar usuário na base da API: " . $SQL . "<br>" . $this->conn->error;
-
-        }
-
-
-
-    }
 
 
 
